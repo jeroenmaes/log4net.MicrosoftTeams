@@ -1,3 +1,4 @@
+[![NuGet version (log4net.MicrosoftTeams)](https://img.shields.io/nuget/v/log4net.MicrosoftTeams.svg?style=flat)](https://www.nuget.org/packages/log4net.MicrosoftTeams/)
 # log4net.MicrosoftTeams
 A log4net appender that writes to Microsoft Teams.
 
