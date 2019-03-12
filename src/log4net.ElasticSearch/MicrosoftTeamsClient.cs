@@ -22,27 +22,32 @@ namespace log4net.MicrosoftTeams
             _uri = new Uri(url);
         }
 
-        public void PostMessageAsync(string text, List<MicrosoftTeamsMessageFact> attachments = null)
+        public void PostMessageAsync(string formattedMessage, List<MicrosoftTeamsMessageFact> facts)
         {
-            var message = CreateMessage(text, attachments);
+            var message = CreateMessageCard(formattedMessage, facts);
             var json = JsonConvert.SerializeObject(message);
 
             var result = Client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")).Result;
         }
 
-        private MicrosoftTeamsMessageCard CreateMessage(string text, List<MicrosoftTeamsMessageFact> attachments = null)
+        private MicrosoftTeamsMessageCard CreateMessageCard(string text, List<MicrosoftTeamsMessageFact> facts)
         {
             var request = new MicrosoftTeamsMessageCard
             {
                 Title = text,
                 Text = text,
-                Color = GetAttachmentColor(),
+                Color = GetAttachmentColor(facts),
                 Sections = new[]
                 {
                     new MicrosoftTeamsMessageSection
                     {
                         Title = "Properties",
-                        Facts = attachments
+                        Facts = facts.Where(x => !x.Name.StartsWith("Exception")).ToArray()
+                    },
+                    new MicrosoftTeamsMessageSection
+                    {
+                        Title = "Exception",
+                        Facts = facts.Where(x => x.Name.StartsWith("Exception")).ToArray()
                     }
                 }
             };
@@ -50,18 +55,29 @@ namespace log4net.MicrosoftTeams
             return request;
         }
 
-        private static string GetAttachmentColor()
+        private static string GetAttachmentColor(List<MicrosoftTeamsMessageFact> facts)
         {
-            return "777777";
+            var level = facts.FirstOrDefault(x => x.Name.StartsWith("Level"));
+
+            return GetAttachmentColor(level?.Value);
         }
 
-        private static string JsonSerializeObject(object obj)
+        private static string GetAttachmentColor(string level)
         {
-            var serializer = new DataContractJsonSerializer(obj.GetType());
-            using (var stream = new MemoryStream())
+            switch (level)
             {
-                serializer.WriteObject(stream, obj);
-                return Encoding.UTF8.GetString(stream.ToArray());
+                case "INFO":
+                    return "5bc0de";
+
+                case "WARN":
+                    return "f0ad4e";
+
+                case "ERROR":
+                case "FATAL":
+                    return "d9534f";
+
+                default:
+                    return "777777";
             }
         }
     }

@@ -12,11 +12,5 @@ namespace log4net.MicrosoftTeams
 
         [JsonProperty("value")]
         public string Value { get; set; }
-
-        public MicrosoftTeamsMessageFact(string name, string value)
-        {
-            Name = name;
-            Value = value;
-        }
     }
 }
