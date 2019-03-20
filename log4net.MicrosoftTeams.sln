@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log4net.MicrosoftTeams", "src\log4net.ElasticSearch\log4net.MicrosoftTeams.csproj", "{810CD689-2F50-418C-AB5F-1285B277C969}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log4net.MicrosoftTeams", "src\log4net.MicrosoftTeams\log4net.MicrosoftTeams.csproj", "{810CD689-2F50-418C-AB5F-1285B277C969}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log4net.MicrosoftTeams.Testing", "tst\log4net.MicrosoftTeams.Testing\log4net.MicrosoftTeams.Testing.csproj", "{8B0B777D-B20F-41CE-A1D2-686C87B5FB46}"
 EndProject

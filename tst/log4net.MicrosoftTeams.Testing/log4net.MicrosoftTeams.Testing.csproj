@@ -53,11 +53,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\log4net.ElasticSearch\log4net.MicrosoftTeams.csproj">
+    <ProjectReference Include="..\..\src\log4net.MicrosoftTeams\log4net.MicrosoftTeams.csproj">
       <Project>{810cd689-2f50-418c-ab5f-1285b277c969}</Project>
       <Name>log4net.MicrosoftTeams</Name>
     </ProjectReference>
