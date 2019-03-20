@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Net.Http;
 using log4net.Appender;
+using log4net.Core;
 
 namespace log4net.MicrosoftTeams
 {
@@ -12,29 +10,54 @@ namespace log4net.MicrosoftTeams
     {
         private readonly Process _currentProcess = Process.GetCurrentProcess();
 
-        public string WebhookUrl { get; set; }
+        private string WebhookUrl { get; set; }
+
+        private MicrosoftTeamsClient _teamsClient;
+
+        internal MicrosoftTeamsClient TeamsClient
+        {
+            get { return this._teamsClient; }
+        }
+
+        public override void ActivateOptions()
+        {
+            base.ActivateOptions();
+
+            if (string.IsNullOrEmpty(WebhookUrl))
+            {
+                throw new ArgumentException("WebhookUrl not set!");
+            }
+
+            this._teamsClient = new MicrosoftTeamsClient(WebhookUrl.Expand());
+        }
 
         protected override void Append(log4net.Core.LoggingEvent loggingEvent)
         {
-            var teamsClient = new MicrosoftTeamsClient(WebhookUrl.Expand());
-            var facts = new List<MicrosoftTeamsMessageFact>();
+            var facts = new Dictionary<string, string>();
 
-            facts.Add(new MicrosoftTeamsMessageFact { Name = "Process", Value = _currentProcess.ProcessName });
-            facts.Add(new MicrosoftTeamsMessageFact { Name = "Machine", Value = Environment.MachineName });
-            facts.Add(new MicrosoftTeamsMessageFact { Name = "Level", Value = loggingEvent.Level.DisplayName });
-            facts.Add(new MicrosoftTeamsMessageFact { Name = "Logger", Value = loggingEvent.LoggerName });
+            facts.Add("Process", _currentProcess.ProcessName );
+            facts.Add("Machine", Environment.MachineName );
+            facts.Add("Level", loggingEvent.Level.DisplayName );
+            facts.Add("Logger", loggingEvent.LoggerName );
 
             // Add exception fields if exception occurred
             var exception = loggingEvent.ExceptionObject;
             if (exception != null)
             {
-                facts.Add(new MicrosoftTeamsMessageFact { Name = "Exception Type", Value = exception.GetType().Name });
-                facts.Add(new MicrosoftTeamsMessageFact { Name = "Exception Message", Value = exception.Message });
+                facts.Add("Exception Type", exception.GetType().Name);
+                facts.Add("Exception Message", exception.Message);
             }
 
             var formattedMessage = (Layout != null ? Layout.FormatString(loggingEvent) : loggingEvent.RenderedMessage);
 
-            teamsClient.PostMessageAsync(formattedMessage, facts);
+            try
+            {
+                TeamsClient.PostMessageAsync(formattedMessage, facts);
+            }
+            catch (Exception ex)
+            {
+                throw new LogException(ex.Message, ex);
+            }
         }
     }
 }

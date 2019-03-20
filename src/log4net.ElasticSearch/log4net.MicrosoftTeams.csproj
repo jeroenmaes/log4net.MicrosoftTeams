@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageProjectUrl>https://github.com/joenmaes/log4net.MicrosoftTeams</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/jeroenmaes/log4net.MicrosoftTeams</PackageProjectUrl>
     <Description>A log4net appender that writes to Microsoft Teams.</Description>
-    <Version>1.1.0</Version>
-    <PackageLicenseUrl>https://github.com/joenmaes/log4net.MicrosoftTeams/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>1.1.1</Version>
+    <PackageLicenseUrl>https://github.com/jeroenmaes/log4net.MicrosoftTeams/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Copyright © Jeroen Maes 2019</Copyright>
     <PackageTags>log4net;MicrosoftTeams;appender</PackageTags>
   </PropertyGroup>

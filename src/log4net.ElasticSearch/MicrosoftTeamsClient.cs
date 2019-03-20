@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -22,7 +17,7 @@ namespace log4net.MicrosoftTeams
             _uri = new Uri(url);
         }
 
-        public void PostMessageAsync(string formattedMessage, List<MicrosoftTeamsMessageFact> facts)
+        public void PostMessageAsync(string formattedMessage, Dictionary<string, string> facts)
         {
             var message = CreateMessageCard(formattedMessage, facts);
             var json = JsonConvert.SerializeObject(message);
@@ -30,7 +25,7 @@ namespace log4net.MicrosoftTeams
             var result = Client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")).Result;
         }
 
-        private MicrosoftTeamsMessageCard CreateMessageCard(string text, List<MicrosoftTeamsMessageFact> facts)
+        private MicrosoftTeamsMessageCard CreateMessageCard(string text, Dictionary<string, string> facts)
         {
             var request = new MicrosoftTeamsMessageCard
             {
@@ -42,12 +37,12 @@ namespace log4net.MicrosoftTeams
                     new MicrosoftTeamsMessageSection
                     {
                         Title = "Properties",
-                        Facts = facts.Where(x => !x.Name.StartsWith("Exception")).ToArray()
+                        Facts = facts.Where(x => !x.Key.StartsWith("Exception")).Select(x => new MicrosoftTeamsMessageFact{ Name = x.Key, Value = x.Value}).ToArray()
                     },
                     new MicrosoftTeamsMessageSection
                     {
                         Title = "Exception",
-                        Facts = facts.Where(x => x.Name.StartsWith("Exception")).ToArray()
+                        Facts = facts.Where(x => x.Key.StartsWith("Exception")).Select(x => new MicrosoftTeamsMessageFact{ Name = x.Key, Value = x.Value}).ToArray()
                     }
                 }
             };
@@ -55,11 +50,11 @@ namespace log4net.MicrosoftTeams
             return request;
         }
 
-        private static string GetAttachmentColor(List<MicrosoftTeamsMessageFact> facts)
+        private static string GetAttachmentColor(Dictionary<string, string> facts)
         {
-            var level = facts.FirstOrDefault(x => x.Name.StartsWith("Level"));
+            var level = facts.FirstOrDefault(x => x.Key.StartsWith("Level"));
 
-            return GetAttachmentColor(level?.Value);
+            return GetAttachmentColor(level.Value);
         }
 
         private static string GetAttachmentColor(string level)
