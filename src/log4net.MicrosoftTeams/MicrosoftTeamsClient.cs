@@ -7,22 +7,28 @@ using Newtonsoft.Json;
 
 namespace log4net.MicrosoftTeams
 {
-    class MicrosoftTeamsClient
+    class MicrosoftTeamsClient : IDisposable
     {
         private readonly Uri _uri;
-        private static readonly HttpClient Client = new HttpClient();
+        private readonly HttpClient _client = new HttpClient();
 
         public MicrosoftTeamsClient(string url)
         {
             _uri = new Uri(url);
         }
 
-        public void PostMessageAsync(string formattedMessage, Dictionary<string, string> facts)
+        public void PostMessage(string formattedMessage, Dictionary<string, string> facts)
         {
             var message = CreateMessageCard(formattedMessage, facts);
             var json = JsonConvert.SerializeObject(message);
 
-            var result = Client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")).Result;
+            var response = _client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")).Result;
+            response.EnsureSuccessStatusCode();
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
         }
 
         private MicrosoftTeamsMessageCard CreateMessageCard(string text, Dictionary<string, string> facts)

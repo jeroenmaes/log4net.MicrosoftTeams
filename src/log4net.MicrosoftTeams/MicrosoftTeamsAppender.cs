@@ -12,12 +12,7 @@ namespace log4net.MicrosoftTeams
 
         private string WebhookUrl { get; set; }
 
-        private MicrosoftTeamsClient _teamsClient;
-
-        internal MicrosoftTeamsClient TeamsClient
-        {
-            get { return this._teamsClient; }
-        }
+        private MicrosoftTeamsClient TeamsClient { get; set; }
 
         public override void ActivateOptions()
         {
@@ -28,10 +23,10 @@ namespace log4net.MicrosoftTeams
                 throw new ArgumentException("WebhookUrl not set!");
             }
 
-            this._teamsClient = new MicrosoftTeamsClient(WebhookUrl.Expand());
+            this.TeamsClient = new MicrosoftTeamsClient(WebhookUrl.Expand());
         }
 
-        protected override void Append(log4net.Core.LoggingEvent loggingEvent)
+        protected override void Append(LoggingEvent loggingEvent)
         {
             var facts = new Dictionary<string, string>();
 
@@ -52,7 +47,7 @@ namespace log4net.MicrosoftTeams
 
             try
             {
-                TeamsClient.PostMessageAsync(formattedMessage, facts);
+                TeamsClient.PostMessage(formattedMessage, facts);
             }
             catch (Exception ex)
             {
