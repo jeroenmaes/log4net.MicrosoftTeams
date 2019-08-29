@@ -22,7 +22,7 @@ namespace log4net.MicrosoftTeams
             var message = CreateMessageCard(formattedMessage, facts);
             var json = JsonConvert.SerializeObject(message);
 
-            var response = _client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")).Result;
+            var response = AsyncHelper.RunSync(() => _client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")));
             response.EnsureSuccessStatusCode();
         }
 
