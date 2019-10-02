@@ -10,7 +10,7 @@ namespace log4net.MicrosoftTeams
     {
         private readonly Process _currentProcess = Process.GetCurrentProcess();
 
-        private string WebhookUrl { get; set; }
+        public string WebhookUrl { get; set; }
 
         private MicrosoftTeamsClient TeamsClient { get; set; }
 
