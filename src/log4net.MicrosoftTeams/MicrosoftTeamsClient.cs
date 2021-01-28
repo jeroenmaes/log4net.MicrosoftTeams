@@ -17,9 +17,9 @@ namespace log4net.MicrosoftTeams
             _uri = new Uri(url);
         }
 
-        public void PostMessage(string formattedMessage, Dictionary<string, string> facts)
+        public void PostMessage(string title, string formattedMessage, Dictionary<string, string> facts)
         {
-            var message = CreateMessageCard(formattedMessage, facts);
+            var message = CreateMessageCard(title, formattedMessage, facts);
             var json = JsonConvert.SerializeObject(message);
 
             var response = AsyncHelper.RunSync(() => _client.PostAsync(_uri, new StringContent(json, Encoding.UTF8, "application/json")));
@@ -31,11 +31,11 @@ namespace log4net.MicrosoftTeams
             _client?.Dispose();
         }
 
-        private MicrosoftTeamsMessageCard CreateMessageCard(string text, Dictionary<string, string> facts)
+        private MicrosoftTeamsMessageCard CreateMessageCard(string title, string text, Dictionary<string, string> facts)
         {
             var request = new MicrosoftTeamsMessageCard
             {
-                Title = text,
+                Title = title,
                 Text = text,
                 Color = GetAttachmentColor(facts),
                 Sections = new[]
