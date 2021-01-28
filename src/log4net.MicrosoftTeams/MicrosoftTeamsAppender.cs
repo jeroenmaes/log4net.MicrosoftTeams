@@ -10,18 +10,7 @@ namespace log4net.MicrosoftTeams
     public class MicrosoftTeamsAppender : AppenderSkeleton
     {
         private readonly Process _currentProcess = Process.GetCurrentProcess();
-
-        /// <summary>
-        ///     Gets or sets the layout for title line of the Teams Post.
-        /// </summary>
-        /// <value>
-        ///     The layout for title line of the Teams Post.
-        /// </value>
-        /// <remarks>
-        ///     <para>
-        ///         The layout for title line of the Teams Post.
-        ///     </para>
-        /// </remarks>
+        
         public PatternLayout TitleLayout { get; set; }
         
         public string WebhookUrl { get; set; }
@@ -56,7 +45,6 @@ namespace log4net.MicrosoftTeams
                 facts.Add("Exception Type", exception.GetType().Name);
                 facts.Add("Exception Message", exception.Message);
             }
-
             
             var formattedMessage = (Layout != null ? Layout.FormatString(loggingEvent) : loggingEvent.RenderedMessage);
             var title = (TitleLayout != null ?  TitleLayout.FormatString(loggingEvent) : formattedMessage);
