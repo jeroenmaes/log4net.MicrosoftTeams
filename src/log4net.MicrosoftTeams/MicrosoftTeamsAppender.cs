@@ -44,6 +44,7 @@ namespace log4net.MicrosoftTeams
             {
                 facts.Add("Exception Type", exception.GetType().Name);
                 facts.Add("Exception Message", exception.Message);
+                facts.Add("Exception Stacktrace", exception.StackTrace);
             }
             
             var formattedMessage = (Layout != null ? Layout.FormatString(loggingEvent) : loggingEvent.RenderedMessage);
